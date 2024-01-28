@@ -177,17 +177,17 @@ class ElementsSuite extends CalicoSuite {
     }
   }
 
-  test("renders a comment") {
+  test("renders a comment - Not supported by calico") {
     // TODO calico doesnt support as on version 0.2.2
   }
 
-  test("renders foreign HTML elements") {
+  test("renders foreign HTML elements - Not supported by calico " ) {
     // TODO calico doesnt support as on version 0.2.2
   }
-  test("renders foreign SVG root elements") {
+  test("renders foreign SVG root elements Not supported by calico") {
     // TODO calico doesnt support as on version 0.2.2
   }
-  test("renders foreign SVG sub-elements") {
+  test("renders foreign SVG sub-elements Not supported by calico") {
     // TODO calico doesnt support as on version 0.2.2
   }
 

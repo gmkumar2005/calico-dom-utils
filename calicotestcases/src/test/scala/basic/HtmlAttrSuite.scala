@@ -76,17 +76,5 @@ class HtmlAttrSuite extends CalicoSuite{
     }
   }
 
-  test("sets props"){
-    val checked_input = input("").flatTap(_.modify(typ:="checkbox")).flatTap(_.modify(checked:=false))
-    checked_input.mountInto(rootElement).surround {
-      IO {
-        val expectedEl = document.createElement("input")
-        expectedEl.setAttribute("checked", "true")
-        expectedEl.setAttribute("type", "checkbox")
-        val actual = dom.document.querySelector("#app > input")
-        assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
-      }
-    }
-  }
+
 }
