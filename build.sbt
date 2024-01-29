@@ -2,7 +2,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.jsEnv
 
 ThisBuild / organization := "io.github.gmkumar2005"
 ThisBuild / scalaVersion := "3.3.1"
-
+ThisBuild / tlBaseVersion := "0.2"
 lazy val calicodomutils = project
   .in(file("./calicodomutils"))
   .enablePlugins(ScalaJSPlugin)

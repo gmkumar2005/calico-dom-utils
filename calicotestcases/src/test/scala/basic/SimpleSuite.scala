@@ -1,13 +1,16 @@
 package basic
 
-import calico.html.io.{b, div, i}
 import calico.*
+import calico.html.io.b
+import calico.html.io.div
 import calico.html.io.given
-import cats.effect.{IO, Resource}
+import calico.html.io.i
+import cats.effect.IO
+import cats.effect.Resource
+import domutils.CalicoSuite
 import fs2.dom.Element
 import munit.CatsEffectSuite
 import org.scalajs.dom
-import domutils.CalicoSuite
 
 class SimpleSuite extends CalicoSuite {
   test("Simple element") {

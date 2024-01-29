@@ -21,9 +21,11 @@ class HelloWorldSuite extends CatsEffectSuite {
 
     val rootElementId: String = "app"
     val window: Window[IO] = Window[IO]
-    val hello_component: Resource[IO, fs2.dom.HtmlElement[IO]] = div(i("hello"), " ", b("world"))
+    val hello_component: Resource[IO, fs2.dom.HtmlElement[IO]] =
+      div(i("hello"), " ", b("world"))
 
-    val rootElement: IO[fs2.dom.Element[IO]] = window.document.getElementById(rootElementId).map(_.get)
+    val rootElement: IO[fs2.dom.Element[IO]] =
+      window.document.getElementById(rootElementId).map(_.get)
 
     rootElement.flatMap(hello_component.renderInto(_).surround {
       IO {
@@ -53,9 +55,7 @@ class HelloWorldSuite extends CatsEffectSuite {
     button.textContent = "Click me!"
     button.addEventListener(
       "click",
-      { (e: dom.MouseEvent) =>
-        addClickedMessage()
-      }
+      { (e: dom.MouseEvent) => addClickedMessage() }
     )
     document.body.appendChild(button)
 

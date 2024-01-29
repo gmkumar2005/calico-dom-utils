@@ -6,8 +6,9 @@ import munit.Assertions.assertEquals
 import munit.CatsEffectSuite
 import org.scalajs.dom
 
-/** Sanity checks on the testing environment. This does not use this library at all.
-  */
+/**
+ * Sanity checks on the testing environment. This does not use this library at all.
+ */
 class DomEnvSuite extends CatsEffectSuite {
 
   test("renders elements with attributes") {
@@ -45,7 +46,10 @@ class DomEnvSuite extends CatsEffectSuite {
       assertEquals(clue(2), clue(callbackCount), clue("Click count should be 2"))
       // Click should not be counted on unrelated div
       div2.click()
-      assertEquals(clue(2), clue(callbackCount), clue("Click should not be counted on unrelated div and should be 2"))
+      assertEquals(
+        clue(2),
+        clue(callbackCount),
+        clue("Click should not be counted on unrelated div and should be 2"))
     }
   }
 

@@ -2,7 +2,8 @@ package basic
 
 import calico.*
 import calico.html.io.{*, given}
-import cats.effect.{IO, Resource}
+import cats.effect.IO
+import cats.effect.Resource
 import domutils.CalicoSuite
 import domutils.Utils.randomString
 import fs2.dom.Element
@@ -16,9 +17,10 @@ class ElementsSuite extends CalicoSuite {
   private val text3 = randomString("text3_")
 
   test("renders empty elements") {
-    val empty_div: Resource[IO, Element[IO]] = div("")
-    val my_div: Resource[IO, org.scalajs.dom.Element] = IO(org.scalajs.dom.document.createElement("div")).toResource
+    val my_div: Resource[IO, org.scalajs.dom.Element] =
+      IO(org.scalajs.dom.document.createElement("div")).toResource
 
+    val empty_div: Resource[IO, Element[IO]] = div("")
     empty_div.mountInto(rootElement).surround {
       IO {
         val expectedEl = document.createElement("div")
@@ -181,7 +183,7 @@ class ElementsSuite extends CalicoSuite {
     // TODO calico doesnt support as on version 0.2.2
   }
 
-  test("renders foreign HTML elements - Not supported by calico " ) {
+  test("renders foreign HTML elements - Not supported by calico ") {
     // TODO calico doesnt support as on version 0.2.2
   }
   test("renders foreign SVG root elements Not supported by calico") {
