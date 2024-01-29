@@ -1,18 +1,14 @@
 package basic
 
-import calico.*
-import calico.*
+import calico.html.io.*
+import calico.html.io.given
 import calico.html.io.colSpan
 import calico.html.io.div
-import calico.html.io.label
 import calico.html.io.rowSpan
 import calico.html.io.title
-import calico.html.io.{*, given}
-import calico.html.io.{*, given}
 import calico.syntax.*
 import cats.effect.IO
 import cats.effect.Resource
-import cats.effect.syntax.all.*
 import cats.syntax.all.*
 import domutils.CalicoSuite
 import domutils.Utils.randomString
@@ -31,29 +27,32 @@ class HtmlAttrSuite extends CalicoSuite {
     val expectedRowSpan = 15 + Random.nextInt(7)
     val title_div: Resource[IO, Element[IO]] = div("").flatTap(_.modify(title := expectedTitle))
 
-    title_div.mountInto(rootElement).surround {
-      IO {
-        val expectedEl = document.createElement("div")
-        expectedEl.setAttribute("title", expectedTitle)
-        val actual = dom.document.querySelector("#app > div")
-        assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+    title_div
+      .mountInto(rootElement)
+      .surround {
+        IO {
+          val expectedEl = document.createElement("div")
+          expectedEl.setAttribute("title", expectedTitle)
+          val actual = dom.document.querySelector("#app > div")
+          assert(actual != null, "querySelector returned null check if the query is correct")
+          assertEquals(actual.outerHTML, expectedEl.outerHTML)
+        }
       }
-    }
-
-    val colSpan_td = td("")
-      .flatTap(_.modify(colSpan := expectedColSpan))
-      .flatTap(_.modify(rowSpan := expectedRowSpan))
-    colSpan_td.mountInto(rootElement).surround {
-      IO {
-        val expectedEl = document.createElement("td")
-        expectedEl.setAttribute("colspan", expectedColSpan.toString)
-        expectedEl.setAttribute("rowspan", expectedRowSpan.toString)
-        val actual = dom.document.querySelector("#app > td")
-        assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+      .flatMap { _ =>
+        val colSpan_td = td("")
+          .flatTap(_.modify(colSpan := expectedColSpan))
+          .flatTap(_.modify(rowSpan := expectedRowSpan))
+        colSpan_td.mountInto(rootElement).surround {
+          IO {
+            val expectedEl = document.createElement("td")
+            expectedEl.setAttribute("colspan", expectedColSpan.toString)
+            expectedEl.setAttribute("rowspan", expectedRowSpan.toString)
+            val actual = dom.document.querySelector("#app > td")
+            assert(actual != null, "querySelector returned null check if the query is correct")
+            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+          }
+        }
       }
-    }
 
   }
 

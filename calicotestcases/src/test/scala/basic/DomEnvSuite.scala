@@ -34,7 +34,7 @@ class DomEnvSuite extends CatsEffectSuite {
       val div = dom.document.createElement("div").asInstanceOf[dom.html.Div]
       val div2 = dom.document.createElement("div").asInstanceOf[dom.html.Div]
       val span = dom.document.createElement("span").asInstanceOf[dom.html.Span]
-      div.addEventListener[dom.MouseEvent]("click", testEvent _)
+      div.addEventListener[dom.MouseEvent]("click", testEvent)
       div.appendChild(span)
       dom.document.body.appendChild(div)
       dom.document.body.appendChild(div2)

@@ -3,6 +3,8 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.jsEnv
 ThisBuild / organization := "io.github.gmkumar2005"
 ThisBuild / scalaVersion := "3.3.1"
 ThisBuild / tlBaseVersion := "0.2"
+ThisBuild / scalacOptions ++= Seq("-new-syntax", "-indent", "-source:future")
+
 lazy val calicodomutils = project
   .in(file("./calicodomutils"))
   .enablePlugins(ScalaJSPlugin)
@@ -27,10 +29,6 @@ lazy val root = project
   .aggregate(calicodomutils, calicotestcases)
 
 lazy val commonSettings = Seq(
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-language:implicitConversions"
-  ),
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-effect" % "3.5.3",
     "com.armanbilge" %%% "fs2-dom" % "0.2.1",
