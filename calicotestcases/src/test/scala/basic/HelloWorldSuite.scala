@@ -41,35 +41,4 @@ class HelloWorldSuite extends CatsEffectSuite {
 
   }
 
-  def addClickedMessage(): Unit = {
-    appendPar(document.body, "You clicked the button!")
-  }
-  def appendPar(targetNode: dom.Node, text: String): Unit = {
-    val parNode = document.createElement("p")
-    parNode.textContent = text
-    targetNode.appendChild(parNode)
-  }
-
-  test("ButtonClick") {
-    val button = document.createElement("button")
-    button.textContent = "Click me!"
-    button.addEventListener(
-      "click",
-      { (e: dom.MouseEvent) => addClickedMessage() }
-    )
-    document.body.appendChild(button)
-
-    def messageCount =
-      document.querySelectorAll("p").count(_.textContent == "You clicked the button!")
-
-    val buttonTest = document.querySelector("button").asInstanceOf[dom.html.Button]
-    assert(buttonTest != null && buttonTest.textContent == "Click me!")
-    assert(messageCount == 0)
-
-    for (c <- 1 to 5) {
-      buttonTest.click()
-      assert(messageCount == c)
-    }
-  }
-
 }

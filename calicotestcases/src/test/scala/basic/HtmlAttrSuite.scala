@@ -13,14 +13,21 @@ import cats.syntax.all.*
 import domutils.CalicoSuite
 import domutils.Utils.randomString
 import fs2.dom.Element
+import fs2.dom.Node
 import munit.CatsEffectSuite
+import munit.catseffect.IOFixture
 import org.scalajs.dom
 import org.scalajs.dom.document
 
 import scala.util.Random
 
 class HtmlAttrSuite extends CalicoSuite {
+  val mainApp: IOFixture[Node[IO]] = ResourceSuiteLocalFixture(
+    "main-app",
+    Resource.eval(rootElement)
+  )
 
+  override def munitFixtures = List(mainApp)
   test("sets attrs") {
     val expectedTitle = randomString("title_")
     val expectedColSpan = 1 + Random.nextInt(15)
@@ -28,7 +35,7 @@ class HtmlAttrSuite extends CalicoSuite {
     val title_div: Resource[IO, Element[IO]] = div("").flatTap(_.modify(title := expectedTitle))
 
     title_div
-      .mountInto(rootElement)
+      .renderInto(mainApp())
       .surround {
         IO {
           val expectedEl = document.createElement("div")
@@ -42,7 +49,7 @@ class HtmlAttrSuite extends CalicoSuite {
         val colSpan_td = td("")
           .flatTap(_.modify(colSpan := expectedColSpan))
           .flatTap(_.modify(rowSpan := expectedRowSpan))
-        colSpan_td.mountInto(rootElement).surround {
+        colSpan_td.renderInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("td")
             expectedEl.setAttribute("colspan", expectedColSpan.toString)
@@ -58,7 +65,7 @@ class HtmlAttrSuite extends CalicoSuite {
 
   test("sets boolean attrs") {
     val editable_div = div("").flatTap(_.modify(contentEditable := true))
-    editable_div.mountInto(rootElement).surround {
+    editable_div.renderInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("div")
         expectedEl.setAttribute("contenteditable", "true")
@@ -70,7 +77,7 @@ class HtmlAttrSuite extends CalicoSuite {
   }
   test("sets integer attrs") {
     val height_td = td("").flatTap(_.modify(heightAttr := 100))
-    height_td.mountInto(rootElement).surround {
+    height_td.renderInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("td")
         expectedEl.setAttribute("height", "100")

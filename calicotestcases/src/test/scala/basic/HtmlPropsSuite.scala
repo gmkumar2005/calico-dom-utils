@@ -4,18 +4,27 @@ import calico.html.io.*
 import calico.html.io.given
 import calico.syntax.*
 import cats.effect.IO
+import cats.effect.Resource
 import cats.syntax.all.*
 import domutils.CalicoSuite
+import fs2.dom.Node
 import munit.CatsEffectSuite
+import munit.catseffect.IOFixture
 import org.scalajs.dom
 import org.scalajs.dom.document
 
 class HtmlPropsSuite extends CalicoSuite {
+  val mainApp: IOFixture[Node[IO]] = ResourceSuiteLocalFixture(
+    "main-app",
+    Resource.eval(rootElement)
+  )
+
+  override def munitFixtures = List(mainApp)
   test("sets props") {
     val checked_input =
       input("").flatTap(_.modify(typ := "checkbox")).flatTap(_.modify(checked := false))
     checked_input
-      .mountInto(rootElement)
+      .renderInto(mainApp())
       .surround {
         IO {
           val expectedEl = document.createElement("input").asInstanceOf[dom.html.Input]
@@ -30,7 +39,7 @@ class HtmlPropsSuite extends CalicoSuite {
       .flatMap { _ =>
 
         val value_of_input = input("").flatTap(_.modify(value := "yolo"))
-        value_of_input.mountInto(rootElement).surround {
+        value_of_input.renderInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("input").asInstanceOf[dom.html.Input]
             expectedEl.value = "yolo"
@@ -43,7 +52,7 @@ class HtmlPropsSuite extends CalicoSuite {
 
         val true_option =
           option("true").flatTap(_.modify(selected := true)).flatTap(_.modify(value := "123"))
-        true_option.mountInto(rootElement).surround {
+        true_option.renderInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("option").asInstanceOf[dom.html.Option]
             expectedEl.selected = true
@@ -62,7 +71,7 @@ class HtmlPropsSuite extends CalicoSuite {
 
         val false_option =
           option("false").flatTap(_.modify(selected := false)).flatTap(_.modify(value := "123"))
-        false_option.mountInto(rootElement).surround {
+        false_option.renderInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("option").asInstanceOf[dom.html.Option]
             expectedEl.selected = false
@@ -81,7 +90,7 @@ class HtmlPropsSuite extends CalicoSuite {
         val div_input =
           div(
             input("").flatTap(_.modify(typ := "checkbox")).flatTap(_.modify(checked := false)))
-        div_input.mountInto(rootElement).surround {
+        div_input.renderInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("div")
             val inputEl = document.createElement("input").asInstanceOf[dom.html.Input]

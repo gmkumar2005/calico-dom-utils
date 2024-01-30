@@ -25,20 +25,6 @@ trait CalicoSuite extends CatsEffectSuite {
   val window: Window[IO] = Window[IO]
   val rootElement: IO[Node[IO]] = window.document.getElementById(rootElementId).map(_.get)
 
-  extension [F[_]](componentUnderTest: Resource[F, Node[F]])
-    def mountInto(rootElement: F[Node[F]])(using Monad[F], Dom[F]): Resource[F, Unit] = {
-
-//      for {
-//        root <- Resource.eval(rootElement)
-//        _ <- componentUnderTest.flatMap(e => Resource.make(root.appendChild(e))(_ => root.removeChild(e)))
-//      } yield ()
-      Resource
-        .eval(rootElement)
-        .flatMap(root =>
-          componentUnderTest.flatMap(e =>
-            Resource.make(root.appendChild(e))(_ => root.removeChild(e))))
-    }
-
   def assertQuery(queryString: String, expected: Int, clue: => Any = "values are not the same")(
       implicit loc: Location): Unit = {
 
