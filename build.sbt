@@ -25,6 +25,7 @@ lazy val calicotestcases = project
   .dependsOn(calicodomutils)
 
 lazy val root = project
+  .settings(name := "calico-dom-utils")
   .in(file("."))
   .aggregate(calicodomutils, calicotestcases)
 
@@ -41,11 +42,14 @@ lazy val commonSettings = Seq(
     "dev.optics" %%% "monocle-core" % "3.2.0",
     "org.typelevel" %%% "scalacheck-effect-munit" % "2.0.0-M2",
     "org.typelevel" %% "cats-effect-testkit" % "3.5.3",
-    "org.typelevel" %%% "munit-cats-effect" % "2.0.0-M4",
-    "org.scalactic" %%% "scalactic" % "3.2.17",
-    "com.raquo" %%% "domtestutils" % "18.0.1" // Scala.js
+    "org.typelevel" %%% "munit-cats-effect" % "2.0.0-M4"
   ),
+//  scalaJSLinkerConfig ~= {
+//    _.withModuleKind(ModuleKind.ESModule).withSourceMap(true)
+//  },
   scalaJSUseMainModuleInitializer := true,
-  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
-//    jsEnv := new jsenv.playwright.PWEnv()
+//  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
+
+  jsEnv := new jsenv.playwright.PWEnv(headless = true, debug=false, browserName = "chromium"),
+  Test / parallelExecution := true
 )

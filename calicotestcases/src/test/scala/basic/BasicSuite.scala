@@ -48,7 +48,7 @@ class BasicSuite extends CalicoSuite {
         IO {
           val expectedEl = document.createElement("span")
           val actual = dom.document.querySelector("#app > span")
-          assert(actual != null, "querySelector returned null check if the query is correct")
+          assert(actual != null, "querySelector returned null. Check if the query is correct")
           assertEquals(actual.outerHTML, expectedEl.outerHTML)
         }
       }
