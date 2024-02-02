@@ -6,25 +6,17 @@ import calico.syntax.*
 import cats.effect.IO
 import cats.effect.Resource
 import cats.syntax.all.*
-import domutils.CalicoSuite
-import fs2.dom.Node
-import munit.CatsEffectSuite
-import munit.catseffect.IOFixture
 import org.scalajs.dom
 import org.scalajs.dom.document
+import utils.CalicoSpec
 
-class HtmlPropsSuite extends CalicoSuite {
-  val mainApp: IOFixture[Node[IO]] = ResourceSuiteLocalFixture(
-    "main-app",
-    Resource.eval(rootElement)
-  )
+class HtmlPropsSuite extends CalicoSpec {
 
-  override def munitFixtures = List(mainApp)
   test("sets props") {
     val checked_input =
       input("").flatTap(_.modify(typ := "checkbox")).flatTap(_.modify(checked := false))
     checked_input
-      .renderInto(mainApp())
+      .mountInto(mainApp())
       .surround {
         IO {
           val expectedEl = document.createElement("input").asInstanceOf[dom.html.Input]
@@ -32,27 +24,28 @@ class HtmlPropsSuite extends CalicoSuite {
           expectedEl.setAttribute("type", "checkbox")
           val actual = dom.document.querySelector("#app > input").asInstanceOf[dom.html.Input]
           assert(actual != null, "querySelector returned null check if the query is correct")
-          assertEquals(actual.outerHTML, expectedEl.outerHTML)
-          assertEquals(actual.checked, expectedEl.checked)
+          actual.outerHTML should equal(expectedEl.outerHTML)
+          actual.checked shouldBe expectedEl.checked
         }
       }
       .flatMap { _ =>
-
-        val value_of_input = input("").flatTap(_.modify(value := "yolo"))
-        value_of_input.renderInto(mainApp()).surround {
+        val value_of_input = input("").flatTap(_.modify(calico.html.io.value := "yolo"))
+        value_of_input.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("input").asInstanceOf[dom.html.Input]
             expectedEl.value = "yolo"
             val actual = dom.document.querySelector("#app > input").asInstanceOf[dom.html.Input]
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
-            assertEquals(actual.value, expectedEl.value)
+            actual.outerHTML should equal(expectedEl.outerHTML)
+            actual.value shouldBe expectedEl.value
           }
         }
 
         val true_option =
-          option("true").flatTap(_.modify(selected := true)).flatTap(_.modify(value := "123"))
-        true_option.renderInto(mainApp()).surround {
+          option("true")
+            .flatTap(_.modify(selected := true))
+            .flatTap(_.modify(calico.html.io.value := "123"))
+        true_option.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("option").asInstanceOf[dom.html.Option]
             expectedEl.selected = true
@@ -61,17 +54,19 @@ class HtmlPropsSuite extends CalicoSuite {
             val actual =
               dom.document.querySelector("#app > option").asInstanceOf[dom.html.Option]
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
-            assertEquals(actual.selected, expectedEl.selected)
-            assertEquals(actual.textContent, expectedEl.textContent)
+            actual.outerHTML should equal(expectedEl.outerHTML)
+            actual.selected shouldBe expectedEl.selected
+            actual.textContent shouldBe expectedEl.textContent
           }
         }
       }
       .flatMap { _ =>
 
         val false_option =
-          option("false").flatTap(_.modify(selected := false)).flatTap(_.modify(value := "123"))
-        false_option.renderInto(mainApp()).surround {
+          option("false")
+            .flatTap(_.modify(selected := false))
+            .flatTap(_.modify(calico.html.io.value := "123"))
+        false_option.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("option").asInstanceOf[dom.html.Option]
             expectedEl.selected = false
@@ -80,9 +75,9 @@ class HtmlPropsSuite extends CalicoSuite {
             val actual =
               dom.document.querySelector("#app > option").asInstanceOf[dom.html.Option]
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
-            assertEquals(actual.selected, expectedEl.selected)
-            assertEquals(actual.textContent, expectedEl.textContent)
+            actual.outerHTML should equal(expectedEl.outerHTML)
+            actual.selected shouldBe expectedEl.selected
+            actual.textContent should equal(expectedEl.textContent)
           }
         }
       }
@@ -90,7 +85,7 @@ class HtmlPropsSuite extends CalicoSuite {
         val div_input =
           div(
             input("").flatTap(_.modify(typ := "checkbox")).flatTap(_.modify(checked := false)))
-        div_input.renderInto(mainApp()).surround {
+        div_input.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("div")
             val inputEl = document.createElement("input").asInstanceOf[dom.html.Input]
@@ -99,11 +94,11 @@ class HtmlPropsSuite extends CalicoSuite {
             expectedEl.appendChild(inputEl)
             val actual = dom.document.querySelector("#app > div")
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+            actual.outerHTML should equal(expectedEl.outerHTML)
             val actualInput =
               dom.document.querySelector("#app > div > input").asInstanceOf[dom.html.Input]
-            assertEquals(actualInput.outerHTML, inputEl.outerHTML)
-            assertEquals(actualInput.checked, inputEl.checked)
+            actualInput.outerHTML should equal(inputEl.outerHTML)
+            actualInput.checked shouldBe inputEl.checked
           }
         }
       }

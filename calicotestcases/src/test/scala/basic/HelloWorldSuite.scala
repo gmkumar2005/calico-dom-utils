@@ -1,16 +1,17 @@
 package basic
 
 import calico.*
-import calico.html.io.{*, given}
+import calico.html.io.*
+import calico.html.io.given
 import calico.syntax.*
 import cats.effect.IO
 import cats.effect.kernel.Resource
 import fs2.dom.*
-import munit.CatsEffectSuite
 import org.scalajs.dom
 import org.scalajs.dom.document
+import utils.CalicoSpec
 
-class HelloWorldSuite extends CatsEffectSuite {
+class HelloWorldSuite extends CalicoSpec {
 
   val args: List[String] = List.empty
 
@@ -30,12 +31,11 @@ class HelloWorldSuite extends CatsEffectSuite {
     rootElement.flatMap(hello_component.renderInto(_).surround {
       IO {
         val documentContents = dom.document.documentElement.innerHTML
-//        println(s"documentContents: $documentContents")
-        assertEquals(
-          documentContents.contains("hello"),
-          true,
-          s"Document does not contain 'hello' actual document contents: $documentContents"
-        )
+        withClue(
+          s"Document does not contain 'hello' actual document contents: $documentContents") {
+          documentContents should include("hello")
+        }
+
       }
     })
 

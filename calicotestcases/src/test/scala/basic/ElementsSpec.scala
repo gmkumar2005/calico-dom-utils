@@ -1,69 +1,60 @@
 package basic
 
 import calico.*
-import calico.syntax.*
-import calico.html.io.{*, given}
-import cats.effect.{IO, Resource}
-import domutils.CalicoSuite
-import domutils.Utils.randomString
+import calico.html.io.*
+import calico.html.io.given
+import cats.effect.IO
+import cats.effect.Resource
 import fs2.dom.Element
-import fs2.dom.Node
-import munit.CatsEffectSuite
-import munit.catseffect.IOFixture
 import org.scalajs.dom
 import org.scalajs.dom.document
+import utils.CalicoSpec
 
-class ElementsSuite extends CalicoSuite {
+class ElementsSpec extends CalicoSpec {
   private val text1 = randomString("text1_")
   private val text2 = randomString("text2_")
   private val text3 = randomString("text3_")
-  val mainApp: IOFixture[Node[IO]] = ResourceSuiteLocalFixture(
-    "main-app",
-    Resource.eval(rootElement)
-  )
-
-  override def munitFixtures = List(mainApp)
 
   test("renders empty elements") {
-    val my_div: Resource[IO, org.scalajs.dom.Element] =
-      IO(org.scalajs.dom.document.createElement("div")).toResource
+//    val my_div: Resource[IO, org.scalajs.dom.Element] =
+//      IO(org.scalajs.dom.document.createElement("div")).toResource
 
     val empty_div: Resource[IO, Element[IO]] = div("")
-    empty_div.renderInto(mainApp()).surround {
+    empty_div.mountInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("div")
         val actual = dom.document.querySelector("#app > div")
         assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+        actual.outerHTML should equal(expectedEl.outerHTML)
       }
     } *> {
       val empty_span: Resource[IO, Element[IO]] = span("")
-      empty_span.renderInto(mainApp()).surround {
+      empty_span.mountInto(mainApp()).surround {
         IO {
           val expectedEl = document.createElement("span")
           val actual = dom.document.querySelector("#app > span")
           assert(actual != null, "querySelector returned null check if the query is correct")
-          assertEquals(actual.outerHTML, expectedEl.outerHTML)
+          actual.outerHTML should equal(expectedEl.outerHTML)
         }
       }
     } *> {
       val empty_p: Resource[IO, Element[IO]] = p("")
-      empty_p.renderInto(mainApp()).surround {
+      empty_p.mountInto(mainApp()).surround {
         IO {
           val expectedEl = document.createElement("p")
           val actual = dom.document.querySelector("#app > p")
           assert(actual != null, "querySelector returned null check if the query is correct")
-          assertEquals(actual.outerHTML, expectedEl.outerHTML)
+          actual.outerHTML should equal(expectedEl.outerHTML)
         }
       }
     } *> {
       val empty_hr: Resource[IO, Element[IO]] = hr("")
-      empty_hr.renderInto(mainApp()).surround {
+      empty_hr.mountInto(mainApp()).surround {
         IO {
           val expectedEl = document.createElement("hr")
           val actual = dom.document.querySelector("#app > hr")
           assert(actual != null, "querySelector returned null check if the query is correct")
-          assertEquals(actual.outerHTML, expectedEl.outerHTML)
+          actual.outerHTML should equal(expectedEl.outerHTML)
         }
       }
     }
@@ -72,22 +63,22 @@ class ElementsSuite extends CalicoSuite {
 
   test("renders elements with text Content") {
     val span_tag = span(text1)
-    span_tag.renderInto(mainApp()).surround {
+    span_tag.mountInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("span")
         expectedEl.textContent = text1
         val actual = dom.document.querySelector("#app > span")
         assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+        actual.outerHTML should equal(expectedEl.outerHTML)
       } *> {
         val article_tag = articleTag(text1)
-        article_tag.renderInto(mainApp()).surround {
+        article_tag.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("article")
             expectedEl.textContent = text1
             val actual = dom.document.querySelector("#app > article")
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+            actual.outerHTML should equal(expectedEl.outerHTML)
           }
 
         }
@@ -97,23 +88,23 @@ class ElementsSuite extends CalicoSuite {
 
   test("renders two text nodes") {
     val span_tag = span(text1, text2)
-    span_tag.renderInto(mainApp()).surround {
+    span_tag.mountInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("span")
         expectedEl.textContent = text1 + text2
         val actual = dom.document.querySelector("#app > span")
         assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+        actual.outerHTML should equal(expectedEl.outerHTML)
       }.flatMap { _ =>
 
         val article_tag = articleTag(text1, text2)
-        article_tag.renderInto(mainApp()).surround {
+        article_tag.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("article")
             expectedEl.textContent = text1 + text2
             val actual = dom.document.querySelector("#app > article")
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+            actual.outerHTML should equal(expectedEl.outerHTML)
           }
         }
       }
@@ -121,17 +112,17 @@ class ElementsSuite extends CalicoSuite {
   }
   test("renders nested elements") {
     val span_tag = span(text1, span(text2))
-    span_tag.renderInto(mainApp()).surround {
+    span_tag.mountInto(mainApp()).surround {
       IO {
         val expectedEl = document.createElement("span")
         expectedEl.textContent = text1 + text2
         val actual = dom.document.querySelector("#app > span")
         assert(actual != null, "querySelector returned null check if the query is correct")
-        assertEquals(actual.outerHTML, expectedEl.outerHTML)
+        actual.outerHTML should equal(expectedEl.outerHTML)
       }.flatMap { _ =>
 
         val article_tag = articleTag(text1, span(text2))
-        article_tag.renderInto(mainApp()).surround {
+        article_tag.mountInto(mainApp()).surround {
           IO {
             val expectedEl = document.createElement("article")
             expectedEl.textContent = text1
@@ -140,7 +131,7 @@ class ElementsSuite extends CalicoSuite {
             expectedEl.appendChild(spanEl)
             val actual = dom.document.querySelector("#app > article")
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+            actual.outerHTML should equal(expectedEl.outerHTML)
           }
         }
       }
@@ -148,7 +139,7 @@ class ElementsSuite extends CalicoSuite {
       // test div > span, p, p
       val div_tag = div(span(text1), p(text2), p(text3))
       div_tag
-        .renderInto(mainApp())
+        .mountInto(mainApp())
         .surround {
           IO {
             val expectedEl = document.createElement("div")
@@ -163,13 +154,13 @@ class ElementsSuite extends CalicoSuite {
             expectedEl.appendChild(pEl2)
             val actual = dom.document.querySelector("#app > div")
             assert(actual != null, "querySelector returned null check if the query is correct")
-            assertEquals(actual.outerHTML, expectedEl.outerHTML)
+            actual.outerHTML should equal(expectedEl.outerHTML)
           }
         }
         .flatMap { _ =>
           // test "div > span, (p > #text, span, span), hr"
           val div_tag2 = div(span(text1), p(text2, span(text3), span(text3)), hr(""))
-          div_tag2.renderInto(mainApp()).surround {
+          div_tag2.mountInto(mainApp()).surround {
             IO {
               val expectedEl = document.createElement("div")
               val spanEl = document.createElement("span")
@@ -190,25 +181,25 @@ class ElementsSuite extends CalicoSuite {
               assert(
                 actual != null,
                 "querySelector returned null check if the query is correct")
-              assertEquals(actual.outerHTML, expectedEl.outerHTML)
+              actual.outerHTML should equal(expectedEl.outerHTML)
             }
           }
         }
     }
   }
 
-  test("renders a comment - Not supported by calico".ignore) {
-    // TODO calico doesnt support as on version 0.2.2
-  }
-
-  test("renders foreign HTML elements - Not supported by calico".ignore) {
-    // TODO calico doesnt support as on version 0.2.2
-  }
-  test("renders foreign SVG root elements Not supported by calico".ignore) {
-    // TODO calico doesnt support as on version 0.2.2
-  }
-  test("renders foreign SVG sub-elements Not supported by calico".ignore) {
-    // TODO calico doesnt support as on version 0.2.2
-  }
+//  test("renders a comment - Not supported by calico".ignore) {
+//    // TODO calico doesnt support as on version 0.2.2
+//  }
+//
+//  test("renders foreign HTML elements - Not supported by calico".ignore) {
+//    // TODO calico doesnt support as on version 0.2.2
+//  }
+//  test("renders foreign SVG root elements Not supported by calico".ignore) {
+//    // TODO calico doesnt support as on version 0.2.2
+//  }
+//  test("renders foreign SVG sub-elements Not supported by calico".ignore) {
+//    // TODO calico doesnt support as on version 0.2.2
+//  }
 
 }

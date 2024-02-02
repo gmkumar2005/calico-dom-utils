@@ -1,8 +1,21 @@
-package domutils
+package utils
+
+import cats.Monad
+import cats.effect.Resource
+import fs2.dom.Dom
+import fs2.dom.Node
 
 import scala.util.Random
 
 trait Utils {
+  extension [F[_]](componentUnderTest: Resource[F, Node[F]])
+    def mountInto(rootElement: F[Node[F]])(using Monad[F], Dom[F]): Resource[F, Unit] = {
+      Resource
+        .eval(rootElement)
+        .flatMap(root =>
+          componentUnderTest.flatMap(e =>
+            Resource.make(root.appendChild(e))(_ => root.removeChild(e))))
+    }
 
   def randomString(prefix: String = "", length: Int = 5): String = {
     prefix + Random.nextString(length)
@@ -14,6 +27,7 @@ trait Utils {
       (1 to length).map(_ => utf8Chars(Random.nextInt(utf8Chars.size))).mkString
     prefix + randomUtf8String
   }
+
   def randomAlphaNumeric(prefix: String = "", length: Int = 5): String = {
     val alphanumericChars =
       ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') // alphanumeric characters range
@@ -22,5 +36,4 @@ trait Utils {
     prefix + randomAlphanumericString
   }
 }
-
 object Utils extends Utils

@@ -40,16 +40,16 @@ lazy val commonSettings = Seq(
     "org.typelevel" %%% "cats-mtl" % "1.3.0",
     "org.scala-js" %%% "scalajs-dom" % "2.8.0",
     "dev.optics" %%% "monocle-core" % "3.2.0",
-    "org.typelevel" %%% "scalacheck-effect-munit" % "2.0.0-M2",
-    "org.typelevel" %% "cats-effect-testkit" % "3.5.3",
-    "org.typelevel" %%% "munit-cats-effect" % "2.0.0-M4"
+    "org.scalactic" %%% "scalactic" % "3.2.17",
+    "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
+    "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
   ),
-//  scalaJSLinkerConfig ~= {
-//    _.withModuleKind(ModuleKind.ESModule).withSourceMap(true)
-//  },
+  scalaJSLinkerConfig ~= {
+    _.withModuleKind(ModuleKind.ESModule).withSourceMap(true)
+  },
   scalaJSUseMainModuleInitializer := true,
 //  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
 
-  jsEnv := new jsenv.playwright.PWEnv(headless = true, debug=false, browserName = "chromium"),
+  jsEnv := new jsenv.playwright.PWEnv(headless = true, debug = false, showLogs=true,  browserName = "chromium"),
   Test / parallelExecution := true
 )
