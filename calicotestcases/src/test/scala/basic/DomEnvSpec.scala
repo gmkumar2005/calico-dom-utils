@@ -48,4 +48,97 @@ class DomEnvSpec extends CalicoSpec {
     }
   }
 
+  test("change events are  triggered by setting input value directly") {
+    IO {
+      var callbackCount = 0
+      val testEvent: dom.Event => Unit = (ev: dom.Event) => {
+        callbackCount += 1
+      }
+      val input = dom.document.createElement("input").asInstanceOf[dom.html.Input]
+      input.addEventListener[dom.Event]("change", listener = testEvent)
+      dom.document.body.appendChild(input)
+      withClue("Change event count should be one") {
+        input.value = "one"
+        // Manually trigger the 'change' event
+        input.dispatchEvent(new dom.Event("change"))
+        1 should equal(callbackCount)
+        input.value should equal("one")
+      }
+      withClue("Change event count should be two") {
+        input.value = "two"
+        // Manually trigger the 'change' event
+        input.dispatchEvent(new dom.Event("change"))
+        2 should equal(callbackCount)
+        input.value should equal("two")
+      }
+    }
+  }
+  test("change events are  triggered when span content is changed") {
+    IO {
+      var callbackCount = 0
+      val testEvent: dom.Event => Unit = (ev: dom.Event) => {
+        callbackCount += 1
+      }
+      val span = dom.document.createElement("span").asInstanceOf[dom.html.Span]
+      span.addEventListener[dom.Event]("change", listener = testEvent)
+      dom.document.body.appendChild(span)
+      withClue("Change event count should be one") {
+        span.textContent = "one"
+        // Manually trigger the 'change' event
+        span.dispatchEvent(new dom.Event("change"))
+        1 should equal(callbackCount)
+        span.textContent should equal("one")
+      }
+      withClue("Change event count should be two") {
+        span.textContent = "two"
+        // Manually trigger the 'change' event
+        span.dispatchEvent(new dom.Event("change"))
+        2 should equal(callbackCount)
+        span.textContent should equal("two")
+      }
+    }
+  }
+
+  test("change in input value should update textContent of a span") {
+    IO {
+      val input = dom.document.createElement("input").asInstanceOf[dom.html.Input]
+      val span = dom.document.createElement("span").asInstanceOf[dom.html.Span]
+      dom.document.body.appendChild(input)
+      dom.document.body.appendChild(span)
+      // attach event listner to input which will update span textContent
+      input.addEventListener[dom.Event](
+        "change",
+        (ev: dom.Event) => {
+          span.textContent = input.value.toUpperCase
+        })
+
+      input.value = "one"
+      input.dispatchEvent(new dom.Event("change"))
+      span.textContent should equal("ONE")
+      input.value = "two"
+      input.dispatchEvent(new dom.Event("change"))
+      span.textContent should equal("TWO")
+    }
+  }
+  test("change in input value should update textContent of a span using input event") {
+    IO {
+      val input = dom.document.createElement("input").asInstanceOf[dom.html.Input]
+      val span = dom.document.createElement("span").asInstanceOf[dom.html.Span]
+      dom.document.body.appendChild(input)
+      dom.document.body.appendChild(span)
+      // attach event listner to input which will update span textContent
+      input.addEventListener[dom.Event](
+        "input",
+        (ev: dom.Event) => {
+          span.textContent = input.value.toUpperCase
+        })
+
+      input.value = "one"
+      input.dispatchEvent(new dom.Event("input"))
+      span.textContent should equal("ONE")
+      input.value = "two"
+      input.dispatchEvent(new dom.Event("input"))
+      span.textContent should equal("TWO")
+    }
+  }
 }
