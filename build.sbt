@@ -19,8 +19,6 @@ lazy val calicotestcases = project
   .settings(commonSettings)
   .settings(
     name := "calico-test-cases"
-    // Generated scala.js output will call your main() method to start your app.
-
   )
   .dependsOn(calicodomutils)
 
@@ -48,8 +46,12 @@ lazy val commonSettings = Seq(
     _.withModuleKind(ModuleKind.ESModule).withSourceMap(true)
   },
   scalaJSUseMainModuleInitializer := true,
-//  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
+//    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
 
-  jsEnv := new jsenv.playwright.PWEnv(headless = true, debug = false, showLogs=true,  browserName = "chromium"),
+  jsEnv := new jsenv.playwright.PWEnv(
+    headless = true,
+    debug = false,
+    showLogs = false,
+    browserName = "chromium"),
   Test / parallelExecution := true
 )

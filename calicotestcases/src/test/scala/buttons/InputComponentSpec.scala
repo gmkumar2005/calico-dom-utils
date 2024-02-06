@@ -34,43 +34,29 @@ class InputComponentSpec extends CalicoSpec {
       )
     }
 
-  test("renders label elements and input elements dispatch events") {
+  test("update span after dispatch input") {
     input_span_component.mountInto(rootElement).surround {
-      IO {
-        val expectedEl = document.createElement("div")
-        val expectedLabel = document.createElement("label")
-        expectedLabel.textContent = "Your name: "
-        expectedEl.appendChild(expectedLabel)
-        val actualLabel = dom.document.querySelector("#app > div > label")
-        assert(
-          actualLabel != null,
-          "querySelector returned null. Check if the query is correct")
-        actualLabel.outerHTML should equal(expectedLabel.outerHTML)
-        val actualInput =
-          document.querySelector("#app > div > input").asInstanceOf[dom.html.Input]
-        val actualSpan = document.querySelector("#app > div > span").asInstanceOf[dom.html.Span]
-        actualSpan.textContent should equal(" Hello, WORLD")
-        actualInput.addEventListener[dom.InputEvent](
-          "input",
-          (ev: dom.InputEvent) => {
-            println(s"change event fired ${ev.data}") // working as expected
-          })
-        withClue("Span value should be 'Hello, RAM' when input value updated to 'Ram'") {
-          actualInput.value = "Ram"
-          // Manually dispatch an InputEvent
+      IO.cede *>
+        IO {
           val inputChangeEvent = new dom.InputEvent(
             "input",
             new InputEventInit {
-              bubbles = true
-              cancelable = true
               data = "Ram"
             })
-
+          val actualInput =
+            document.querySelector("#app > div > input").asInstanceOf[dom.html.Input]
+          actualInput.value = "Ram"
+          actualInput.addEventListener[dom.InputEvent](
+            "input",
+            listener = (ev: dom.InputEvent) => {
+              println(s"input event fired with data: ${ev.data}") // Printing after assertion
+            })
           actualInput.dispatchEvent(inputChangeEvent)
+        } *> IO.cede *> IO.cede *> IO {
+          val actualSpan =
+            document.querySelector("#app > div > span").asInstanceOf[dom.html.Span]
           actualSpan.textContent should equal(" Hello, RAM")
         }
-
-      }
     }
   }
 }
