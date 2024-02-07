@@ -8,6 +8,8 @@ import fs2.dom.Element
 import org.scalajs.dom
 import org.scalajs.dom.document
 import org.scalatest.matchers.must.Matchers.*
+import org.scalatest.matchers.should.Matchers.equal
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 class MySpec extends CalicoSpec {

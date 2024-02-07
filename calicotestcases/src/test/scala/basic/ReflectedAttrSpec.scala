@@ -8,6 +8,9 @@ import cats.effect.Resource
 import cats.syntax.all.*
 import org.scalajs.dom
 import org.scalajs.dom.document
+import org.scalatest.matchers.should.Matchers.equal
+import org.scalatest.matchers.should.Matchers.not
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 import scala.util.Random

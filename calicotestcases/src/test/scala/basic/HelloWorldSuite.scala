@@ -9,6 +9,8 @@ import cats.effect.kernel.Resource
 import fs2.dom.*
 import org.scalajs.dom
 import org.scalajs.dom.document
+import org.scalatest.matchers.should.Matchers.include
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 class HelloWorldSuite extends CalicoSpec {

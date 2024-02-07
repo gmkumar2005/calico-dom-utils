@@ -8,6 +8,26 @@ import fs2.dom.Node
 import scala.util.Random
 
 trait Utils {
+
+  extension (selectElement: org.scalajs.dom.html.Select) {
+    def optionsList: List[String] = {
+      val options =
+        for (i <- 0 until selectElement.options.length) yield selectElement.options(i).value
+      options.toList
+    }
+  }
+
+  extension (element: org.scalajs.dom.Element) {
+    def textIgnoreChildren: String = {
+      val childNodes = element.childNodes
+      val textNodes =
+        for (i <- 0 until childNodes.length
+          if childNodes(i).nodeType == org.scalajs.dom.Node.TEXT_NODE)
+          yield childNodes(i).textContent
+      textNodes.mkString
+    }
+  }
+
   extension [F[_]](componentUnderTest: Resource[F, Node[F]])
     def mountInto(rootElement: F[Node[F]])(using Monad[F], Dom[F]): Resource[F, Unit] = {
       Resource

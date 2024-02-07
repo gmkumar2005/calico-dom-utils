@@ -10,6 +10,8 @@ import fs2.dom.*
 import org.scalajs.dom
 import org.scalajs.dom.InputEventInit
 import org.scalajs.dom.document
+import org.scalatest.matchers.should.Matchers.equal
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 class InputComponentSpec extends CalicoSpec {
@@ -46,11 +48,11 @@ class InputComponentSpec extends CalicoSpec {
           val actualInput =
             document.querySelector("#app > div > input").asInstanceOf[dom.html.Input]
           actualInput.value = "Ram"
-          actualInput.addEventListener[dom.InputEvent](
-            "input",
-            listener = (ev: dom.InputEvent) => {
-              println(s"input event fired with data: ${ev.data}") // Printing after assertion
-            })
+//          actualInput.addEventListener[dom.InputEvent](
+//            "input",
+//            listener = (ev: dom.InputEvent) => {
+//              println(s"input event fired with data: ${ev.data}") // Printing after assertion
+//            })
           actualInput.dispatchEvent(inputChangeEvent)
         } *> IO.cede.replicateA_(10) *> IO {
           val actualSpan =

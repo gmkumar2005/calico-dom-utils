@@ -8,9 +8,8 @@ import fs2.dom.Window
 import org.scalajs.dom
 import org.scalajs.dom.document
 import org.scalatest.funsuite.AsyncFunSuite
-import org.scalatest.matchers.should.Matchers
 
-abstract class CalicoSpec extends AsyncFunSuite with Matchers with AsyncIOSpec with Utils {
+abstract class CalicoSpec extends AsyncFunSuite with AsyncIOSpec with Utils {
   val appDiv: dom.Element = document.createElement("div")
   appDiv.id = "app"
   document.body.appendChild(appDiv)

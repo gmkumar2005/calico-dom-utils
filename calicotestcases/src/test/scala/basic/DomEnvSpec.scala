@@ -2,6 +2,8 @@ package basic
 
 import cats.effect.IO
 import org.scalajs.dom
+import org.scalatest.matchers.should.Matchers.equal
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 /**

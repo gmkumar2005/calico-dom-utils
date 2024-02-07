@@ -1,9 +1,9 @@
 package basic
 
 import calico.html.io.*
-import calico.html.io.given
 import calico.html.io.colSpan
 import calico.html.io.div
+import calico.html.io.given
 import calico.html.io.rowSpan
 import calico.html.io.title
 import calico.syntax.*
@@ -13,6 +13,8 @@ import cats.syntax.all.*
 import fs2.dom.Element
 import org.scalajs.dom
 import org.scalajs.dom.document
+import org.scalatest.matchers.should.Matchers.equal
+import org.scalatest.matchers.should.Matchers.should
 import utils.CalicoSpec
 
 import scala.util.Random

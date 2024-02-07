@@ -8,6 +8,7 @@ import cats.effect.Resource
 import fs2.dom.Element
 import org.scalajs.dom
 import org.scalajs.dom.document
+import org.scalatest.matchers.should.Matchers.*
 import utils.CalicoSpec
 
 class ElementsSpec extends CalicoSpec {
