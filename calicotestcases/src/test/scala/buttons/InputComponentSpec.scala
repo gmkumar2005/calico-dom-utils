@@ -36,7 +36,7 @@ class InputComponentSpec extends CalicoSpec {
 
   test("update span after dispatch input") {
     input_span_component.mountInto(rootElement).surround {
-      IO.cede *>
+      IO.cede.replicateA_(3) *>
         IO {
           val inputChangeEvent = new dom.InputEvent(
             "input",
@@ -52,7 +52,7 @@ class InputComponentSpec extends CalicoSpec {
               println(s"input event fired with data: ${ev.data}") // Printing after assertion
             })
           actualInput.dispatchEvent(inputChangeEvent)
-        } *> IO.cede *> IO.cede *> IO {
+        } *> IO.cede.replicateA_(10) *> IO {
           val actualSpan =
             document.querySelector("#app > div > span").asInstanceOf[dom.html.Span]
           actualSpan.textContent should equal(" Hello, RAM")
