@@ -6,6 +6,10 @@
 `sbt "all scalafixAll --check"`
 ### Format code
 `sbt scalafmtAll`
+### ScalaFix and format code
+`all scalafmtAll; all scalafixAll`
+### Check all
+`all scalafixAll --check ; all scalafmtCheckAll ; all headerCheckAll`
 ### Gpg
 `echo test | gpg -e -r kiran@akkagrpc.com | gpg -d`
 `echo test | gpg -e -r F7E440260BAE93EB4AD2723D6613CA76E011F638 | gpg -d`

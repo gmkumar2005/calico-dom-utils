@@ -4,19 +4,18 @@ import calico.html.io.*
 import calico.html.io.given
 import cats.effect.IO
 import cats.effect.Resource
-import fs2.concurrent.SignallingRef
 import fs2.concurrent.Channel
+import fs2.concurrent.SignallingRef
 import fs2.dom.HtmlDivElement
 import org.scalajs.dom
+import org.scalajs.dom.document
+import org.scalajs.dom.html.Button
 import org.scalajs.dom.html.Element
 import org.scalajs.dom.html.Paragraph
 import org.scalajs.dom.html.Select
-import org.scalajs.dom.html.Button
-import org.scalajs.dom.document
-import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatest.matchers.should.Matchers.not
 import org.scalatest.matchers.should.Matchers.should
-import scala.concurrent.duration.* 
+import org.scalatest.matchers.should.Matchers.shouldBe
 import utils.CalicoSpec
 
 class CounterSuite extends CalicoSpec {
@@ -104,6 +103,33 @@ class CounterSuite extends CalicoSpec {
         }
         _ <- IO.cede.replicateA_(40)
         _ = actualSheepCount.textIgnoreChildren shouldBe "-6"
+      } yield ()
+    }
+  }
+
+  test("Sheep count should incremented by 3 when plus button is clicked") {
+    counter_component.mountInto(rootElement).surround {
+      for {
+        _ <- IO.cede.replicateA_(40)
+        plusButton = document
+          .querySelector("#app > div div p button:nth-child(3)")
+          .asInstanceOf[Button]
+        _ = plusButton should not be null
+        actualSheepCount = document
+          .querySelector("#app > div >div > p + p > b")
+          .asInstanceOf[Element]
+        _ = {
+          actualSheepCount should not be null
+          actualSheepCount.textIgnoreChildren shouldBe "0"
+          plusButton.click()
+        }
+        _ <- IO.cede.replicateA_(40)
+        _ = {
+          actualSheepCount.textIgnoreChildren shouldBe "3"
+          plusButton.click()
+        }
+        _ <- IO.cede.replicateA_(40)
+        _ = actualSheepCount.textIgnoreChildren shouldBe "6"
       } yield ()
     }
   }
