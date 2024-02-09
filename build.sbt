@@ -40,7 +40,8 @@ lazy val commonSettings = Seq(
     "dev.optics" %%% "monocle-core" % "3.2.0",
     "org.scalactic" %%% "scalactic" % "3.2.17",
     "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
-    "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test
+    "org.typelevel" %%% "cats-effect-testing-scalatest" % "1.5.0" % Test,
+    "com.raquo" %%% "domtestutils" % "18.0.1" % Test
   ),
   scalaJSLinkerConfig ~= {
     _.withModuleKind(ModuleKind.ESModule).withSourceMap(true)

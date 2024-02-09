@@ -29,6 +29,10 @@ trait Utils {
   }
 
   extension [F[_]](componentUnderTest: Resource[F, Node[F]])
+    /**
+     * Combines the component under test with a root element and mounts the component into the
+     * root element.
+     */
     def mountInto(rootElement: F[Node[F]])(using Monad[F], Dom[F]): Resource[F, Unit] = {
       Resource
         .eval(rootElement)
